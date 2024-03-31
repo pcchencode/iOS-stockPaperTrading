@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0BEF482BB8875F00D7A7FE /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BEF472BB8875F00D7A7FE /* Food.swift */; };
 		2C975F552BB662990006BF13 /* ProjectTestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C975F542BB662990006BF13 /* ProjectTestApp.swift */; };
 		2C975F572BB662990006BF13 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C975F562BB662990006BF13 /* ContentView.swift */; };
 		2C975F592BB6629C0006BF13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C975F582BB6629C0006BF13 /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 
 /* Begin PBXFileReference section */
 		2C0BEF402BB66F6000D7A7FE /* ProjectTest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProjectTest.entitlements; sourceTree = "<group>"; };
+		2C0BEF472BB8875F00D7A7FE /* Food.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 		2C975F512BB662990006BF13 /* ProjectTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C975F542BB662990006BF13 /* ProjectTestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectTestApp.swift; sourceTree = "<group>"; };
 		2C975F562BB662990006BF13 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 		2C975F5A2BB6629C0006BF13 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				2C0BEF472BB8875F00D7A7FE /* Food.swift */,
 				2C975F5B2BB6629C0006BF13 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -142,6 +145,7 @@
 			files = (
 				2C975F572BB662990006BF13 /* ContentView.swift in Sources */,
 				2C975F552BB662990006BF13 /* ProjectTestApp.swift in Sources */,
+				2C0BEF482BB8875F00D7A7FE /* Food.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

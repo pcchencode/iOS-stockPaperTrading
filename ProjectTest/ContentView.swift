@@ -17,30 +17,46 @@ struct BlueButton: ButtonStyle {
     }
 }
 
+//TestView是為了強制滿版，舊版Xcode很多設定都不適用
 struct TestView : View {
-    let food = ["井上禾食","頂好紫琳","鼎泰豐","補時","一蘭拉麵"]
-    @State private var selectedFood: String?
+//    let food = ["井上禾食","頂好紫琳","鼎泰豐","補時","一蘭拉麵"]
+    let food = Food.examples
+    @State private var selectedFood: Food?
     var body: some View {
         ZStack() {
             Color(.secondarySystemBackground).edgesIgnoringSafeArea(.all)
 //            Color.yellow.edgesIgnoringSafeArea(.all)
             VStack(spacing: 30) {
-                Image("dinner")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                Group {
+                    if selectedFood != .none {
+                        Text(selectedFood!.image)
+                            .font(.system(size: 200))
+                            .minimumScaleFactor(0.1)
+                            .lineLimit(1)
+                    } else{
+                        Image("dinner")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            
+                    }
+                }.frame(height: 350)
+
 
                 Text("今天吃什麼？")
-                    .font(.title)
+//                    .font(.title)
+                    .font(.system(size: 50))
                     .bold()
                 
                 if selectedFood != .none {
-                    Text(selectedFood ?? "")
+                    Text(selectedFood!.name)
                         .font(.largeTitle)
                         .bold()
                         .foregroundColor(.green)
-                        .id(selectedFood)
+                        .id(selectedFood!.name)
                         .transition(.asymmetric(insertion: .opacity, removal: .scale))
                 }
+                
+                Spacer()
 
                 Button() {
                     selectedFood = food.shuffled().filter { $0 != selectedFood}.first
@@ -91,7 +107,7 @@ struct ContentView: View {
                 .aspectRatio(contentMode: .fit)
 
             Text("今天吃什麼？")
-                .font(.title)
+                .font(.largeTitle)
                 .bold()
             
             if selectedFood != .none {
@@ -128,7 +144,6 @@ struct ContentView: View {
             .cornerRadius(40)
         }
         .padding()
-        .font(.title)
         .edgesIgnoringSafeArea(.all)
         .frame(
               minWidth: 0,
@@ -137,6 +152,7 @@ struct ContentView: View {
               maxHeight: .infinity
         )
         .background(Color(.secondarySystemBackground))
+        .font(.title)
         .animation(.easeIn(duration: 1), value: selectedFood)
     }
 }
@@ -144,6 +160,8 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         TestView()
+            
+//        ContentView()
             
             
     }
