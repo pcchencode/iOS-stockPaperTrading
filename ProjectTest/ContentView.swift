@@ -48,15 +48,46 @@ struct TestView : View {
                     .bold()
                 
                 if selectedFood != .none {
-                    Text(selectedFood!.name)
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundColor(.green)
-                        .id(selectedFood!.name)
-                        .transition(.asymmetric(insertion: .opacity, removal: .scale))
+                    HStack {
+                        Text(selectedFood!.name)
+                            .font(.largeTitle)
+                            .bold()
+                            .foregroundColor(.green)
+                            .id(selectedFood!.name)
+                            .transition(.asymmetric(insertion: .opacity, removal: .scale))
+                        Image(systemName: "info.circle.fill")
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Text("熱量 \(String(format: "%.0f", selectedFood!.calorie)) 大卡")
+                    
+                    HStack {
+                        VStack(spacing: 12) {
+                            Text("蛋白質")
+                            Text(String(format: "%.0f", selectedFood!.protein)+" g")
+                        }
+                        
+                        Divider().frame(width: 1).padding(.horizontal)
+                        
+                        VStack(spacing: 12) {
+                            Text("脂肪")
+                            Text(String(format: "%.0f", selectedFood!.fat)+" g")
+                        }
+                        
+                        Divider().frame(width: 1).padding(.horizontal)
+                        
+                        VStack(spacing: 12) {
+                            Text("碳水")
+                            Text(String(format: "%.0f", selectedFood!.carb)+" g")
+                        }
+                    }
+                    .font(.system(size: 24))
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 8).foregroundColor(Color(.systemBackground)))
+ 
                 }
                 
-                Spacer()
+//                Spacer()
 
                 Button() {
                     selectedFood = food.shuffled().filter { $0 != selectedFood}.first
@@ -66,7 +97,7 @@ struct TestView : View {
                 .font(.title)
                 //.buttonStyle(.borderedProminent) //可能是因為舊版Xcode，這個指令沒有
                 .foregroundColor(.white)
-                .frame(height: 80)
+                .frame(height: 70)
                 .background(Color.blue)
                 .cornerRadius(35)
                 .padding(.bottom, -15)
@@ -92,6 +123,12 @@ struct TestView : View {
                   maxHeight: .infinity
             )
             .animation(.easeIn(duration: 1), value: selectedFood)        }
+    }
+}
+
+extension TestView {
+    init(selectedFood: Food) {
+        _selectedFood = State(wrappedValue: selectedFood)
     }
 }
 
@@ -157,10 +194,11 @@ struct ContentView: View {
     }
 }
 
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        TestView()
-            
+//        TestView()
+        TestView(selectedFood: Food.examples.first!)
 //        ContentView()
             
             
