@@ -22,45 +22,46 @@ struct TestView : View {
 //    let food = ["井上禾食","頂好紫琳","鼎泰豐","補時","一蘭拉麵"]
     let food = Food.examples
     @State private var selectedFood: Food?
-    var body: some View {
-        ZStack() {
-            Color(.secondarySystemBackground).edgesIgnoringSafeArea(.all)
-//            Color.yellow.edgesIgnoringSafeArea(.all)
-            VStack(spacing: 30) {
-                Group {
-                    if selectedFood != .none {
-                        Text(selectedFood!.image)
-                            .font(.system(size: 200))
-                            .minimumScaleFactor(0.1)
-                            .lineLimit(1)
-                    } else{
-                        Image("dinner")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            
-                    }
-                }.frame(height: 350)
-
-
-                Text("今天吃什麼？")
-//                    .font(.title)
-                    .font(.system(size: 50))
+    @State private var showInfo: Bool = false
+    
+    var foodImage: some View {
+        Group {
+            if selectedFood != .none {
+                Text(selectedFood!.image)
+                    .font(.system(size: 200))
+                    .minimumScaleFactor(0.1)
+                    .lineLimit(1)
+            } else{
+                Image("dinner")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    
+            }
+        }.frame(height: 350)
+    }
+    
+    @ViewBuilder var selectedFoodInfoView: some View {
+        if selectedFood != .none {
+            HStack {
+                Text(selectedFood!.name)
+                    .font(.largeTitle)
                     .bold()
-                
-                if selectedFood != .none {
-                    HStack {
-                        Text(selectedFood!.name)
-                            .font(.largeTitle)
-                            .bold()
-                            .foregroundColor(.green)
-                            .id(selectedFood!.name)
-                            .transition(.asymmetric(insertion: .opacity, removal: .scale))
-                        Image(systemName: "info.circle.fill")
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Text("熱量 \(String(format: "%.0f", selectedFood!.calorie)) 大卡")
-                    
+                    .foregroundColor(.green)
+                    .id(selectedFood!.name)
+                    .transition(.asymmetric(insertion: .opacity, removal: .scale))
+
+                Button() {
+                    showInfo.toggle()
+                } label: {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            Text("熱量 \(String(format: "%.0f", selectedFood!.calorie)) 大卡")
+            
+            VStack {
+                if showInfo{
                     HStack {
                         VStack(spacing: 12) {
                             Text("蛋白質")
@@ -84,9 +85,25 @@ struct TestView : View {
                     .font(.system(size: 24))
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 8).foregroundColor(Color(.systemBackground)))
- 
+                    .transition(.move(edge: .top))
                 }
+            }
+            .frame(maxWidth: .infinity)
+            .clipped()
+        }
+
+    }
+    
+    var body: some View {
+        ZStack() {
+            Color(.secondarySystemBackground).edgesIgnoringSafeArea(.all)
+//            Color.yellow.edgesIgnoringSafeArea(.all)
+            VStack(spacing: 30) {
+                foodImage
+
+                Text("今天吃什麼？?").font(.system(size: 50)).bold()
                 
+                selectedFoodInfoView
 //                Spacer()
 
                 Button() {
@@ -104,6 +121,7 @@ struct TestView : View {
                                     
                 Button() {
                     selectedFood = .none
+                    showInfo = false
                 } label: {
                     Text("重置").frame(width:200)
                 }
@@ -122,7 +140,9 @@ struct TestView : View {
                   minHeight: 0,
                   maxHeight: .infinity
             )
-            .animation(.easeIn(duration: 1), value: selectedFood)        }
+            .animation(.easeIn(duration: 1), value: selectedFood)
+            .animation(/*@START_MENU_TOKEN@*/.easeIn/*@END_MENU_TOKEN@*/, value: showInfo)
+        }
     }
 }
 
