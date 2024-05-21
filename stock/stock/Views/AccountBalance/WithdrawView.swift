@@ -1,12 +1,14 @@
 import SwiftUI
 
-struct NewDepositView: View {
+struct WithdrawView: View {
     @Environment(\.self) var env
     
     @State private var amountInput = ""
     @State private var descInput = ""
-    
-    //Core Data
+    @State private var showAlert = false // 新增一個狀態來控制警示的顯示
+    @State private var alertMessage = "" // 警示訊息
+
+    // Core Data
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Balance.entity(), sortDescriptors: [])
     private var balances: FetchedResults<Balance>
@@ -14,20 +16,20 @@ struct NewDepositView: View {
     var body: some View {
         VStack {
             VStack(spacing: 15) {
-                Text("Add Deposit")
+                Text("Withdraw")
                     .font(.title2)
                     .fontWeight(.semibold)
                     .opacity(0.5)
             
-                //TextField
+                // TextField
                 TextField("0", text: $amountInput)
                     .font(.system(size: 35))
                     .foregroundColor(Color("Gradient2"))
                     .multilineTextAlignment(.center)
                     .keyboardType(.numberPad)
                     .background {
-                        Text(amountInput == "" ? "0" :amountInput)
-                            .font(.system(size:35))
+                        Text(amountInput == "" ? "0" : amountInput)
+                            .font(.system(size: 35))
                             .opacity(0)
                             .overlay(alignment: .leading) {
                                 Text("$")
@@ -44,24 +46,7 @@ struct NewDepositView: View {
                     .padding(.horizontal, 20)
                     .padding(.top)
                 
-                //CheckBox
-                Label {
-                    //Bank, ApplyPay, LinePay
-                    CustomCheckboxes()
-                } icon: {
-                    Image(systemName: "creditcard")
-                        .font(.title3)
-                        .foregroundColor(.gray)
-                }
-                .padding(.vertical, 20)
-                .padding(.horizontal, 15)
-                .background {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(.white)
-                }
-                .padding(.top, 5)
-                
-                //Description
+                // Description
                 Label {
                     TextField("Description", text: $descInput)
                         .padding(.leading, 10)
@@ -81,12 +66,11 @@ struct NewDepositView: View {
             }
             .frame(maxHeight: .infinity, alignment: .center)
             
-            //MARK: Submit Button
+            // MARK: Submit Button
             Button {
-                addDeposit()
-                env.dismiss() //關閉當前視窗
+                addWithdraw()
             } label: {
-                Text("Submit")
+                Text("提領")
                     .font(.title3)
                     .fontWeight(.semibold)
                     .padding(.vertical, 15)
@@ -100,8 +84,8 @@ struct NewDepositView: View {
                     .foregroundColor(.white)
                     .padding(.bottom, 10)
             }
-            .disabled(amountInput == "" || (!selectedApplePay && !selectedLinePay && !selectedBank))
-            .opacity(amountInput == "" || (!selectedApplePay && !selectedLinePay && !selectedBank) ? 0.6 : 1)
+            .disabled(amountInput == "")
+            .opacity(amountInput == "" ? 0.6 : 1)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -112,7 +96,7 @@ struct NewDepositView: View {
         .overlay(alignment: .topTrailing) {
             // close button
             Button {
-                env.dismiss() //關閉當前視窗
+                env.dismiss() // 關閉當前視窗
             } label: {
                 Image(systemName: "xmark")
                     .font(.title2)
@@ -121,12 +105,18 @@ struct NewDepositView: View {
             }
             .padding()
         }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("錯誤").foregroundColor(.red), // 设置标题为红色
+                message: Text(alertMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
     }
-    
+
     // MARK: Checkboxes
-    @State var selectedApplePay: Bool = false
-    @State var selectedLinePay: Bool = false
-    @State var selectedBank: Bool = false
+    @State var selectedApplePay: Bool = false // 這裡只為先為了刻畫面方便
+    @State var selectedLinePay: Bool = false // 這樣做有問題，變成儲值方式可以多選（照理來說是單選）
     @ViewBuilder
     func CustomCheckboxes() -> some View {
         HStack(spacing: 10) {
@@ -143,9 +133,7 @@ struct NewDepositView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                selectedApplePay = true
-                selectedLinePay = false
-                selectedBank = false
+                selectedApplePay.toggle()
             }
             Text("ApplePay")
                 .font(.callout)
@@ -166,34 +154,9 @@ struct NewDepositView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                selectedApplePay = false
-                selectedLinePay = true
-                selectedBank = false
+                selectedLinePay.toggle()
             }
-            Text("Line")
-                .font(.callout)
-                .fontWeight(.semibold)
-                .opacity(0.7)
-                .padding(.trailing, 10)
-            
-            ZStack {
-                RoundedRectangle(cornerRadius: 2)
-                    .stroke(.black, lineWidth: 2)
-                    .opacity(0.5)
-                    .frame(width: 20, height: 20)
-                if selectedBank {
-                    Image(systemName: "checkmark")
-                        .font(.caption.bold())
-                        .foregroundColor(.green)
-                }
-            }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                selectedApplePay = false
-                selectedLinePay = false
-                selectedBank = true
-            }
-            Text("Bank")
+            Text("ApplePay")
                 .font(.callout)
                 .fontWeight(.semibold)
                 .opacity(0.7)
@@ -202,40 +165,41 @@ struct NewDepositView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.leading, 10)
     }
-    
-    // MARK: Add Deposit Function
-    private func addDeposit() {
-        guard let depositAmount = Double(amountInput), let balance = balances.first else {
+
+    // MARK: Add Withdraw Function
+    private func addWithdraw() {
+        guard let withdrawAmount = Double(amountInput), let balance = balances.first else {
             return
         }
-        balance.balance += depositAmount
         
         let transaction = Transaction(context: viewContext)
         transaction.id = UUID()
         transaction.date = Date()
-        transaction.amount = depositAmount
-        
-        // 根据选中的支付方式设置交易类型
-        if selectedApplePay {
-            transaction.type = "ApplePay"
-        } else if selectedLinePay {
-            transaction.type = "Line"
-        } else if selectedBank {
-            transaction.type = "Bank"
-        } else {
-            transaction.type = "Deposit"
-        }
+        transaction.amount = withdrawAmount
+        transaction.type = "Withdraw"
         
         do {
             try viewContext.save()
         } catch {
             print("Failed to save deposit: \(error)")
         }
+
+        
+        if balance.balance >= withdrawAmount {
+            balance.balance -= withdrawAmount
+            do {
+                try viewContext.save()
+                env.dismiss() // 關閉當前視窗
+            } catch {
+                print("Failed to save withdrawal: \(error)")
+            }
+        } else {
+            alertMessage = "帳戶餘額不足 :("
+            showAlert = true
+        }
     }
 }
 
-struct NewDepositView_Previews: PreviewProvider {
-    static var previews: some View {
-        NewDepositView()
-    }
+#Preview {
+    WithdrawView()
 }

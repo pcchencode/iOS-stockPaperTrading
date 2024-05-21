@@ -6,11 +6,18 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct BalanceCardView: View {
     @State private var isHidden: Bool = false
     @State private var showAlert: Bool = false
-    @Binding var showSheet: Bool
+    @Binding var showDepositSheet: Bool
+    @Binding var showWithdrawSheet: Bool
+    
+    //Core Data
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(entity: Balance.entity(), sortDescriptors: [])
+    private var balances: FetchedResults<Balance>
     
     var body: some View {
         VStack (alignment: .center) {
@@ -25,7 +32,7 @@ struct BalanceCardView: View {
                         print("tapped hide")
                         }) {
                             Image(systemName: "eye.slash")
-                                .accentColor(Color.white)
+                                .accentColor(Color.black)
                                 .font(.system(size: 30))
                         }
                 } else {
@@ -39,31 +46,39 @@ struct BalanceCardView: View {
                         }
                 }
             }
+            .frame(height: 20) // 固定高度可解決頁面跳動問題
+//            Text(isHidden ?"電燈：Of":"電燈：On")
+//            Spacer().frame(height: 10)
             
-            Spacer().frame(height: 10)
+            
             
             if isHidden{
                 HStack (alignment: .top) {
-                    Text("$ *****")
-                        .foregroundColor(Color.black)
-                        .bold()
-                        .font(.system(size: 50))
+                    Text("$ \("****.**")")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
                 }
             } else {
                 HStack (alignment: .top) {
-                    Text("$9487.94")
-                        .foregroundColor(Color.black)
-                        .bold()
-                        .font(.system(size: 50))
+                    if let balance = balances.first?.balance {
+                        Text(String(format: "$%.2f", balance))
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                    } else {
+                        Text(String(format: "$%.2f", 8.7))
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                    }               
                 }
             }
             
             Spacer().frame(height: 50)
+            
             HStack (alignment: .center) {
                 Button(action: {
                     print("tapped deposit")
                     // showAlert = true
-                    showSheet.toggle()
+                    showDepositSheet.toggle()
                     }) {
                         Text("Deposit")
                             .bold()
@@ -75,10 +90,6 @@ struct BalanceCardView: View {
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(LinearGradient(gradient: Gradient(colors: [Color("Gradient1"), Color("Gradient2"), Color("Gradient3")]), startPoint: .topLeading, endPoint: .bottomTrailing))
                             )
-//                            .background(
-//                                RoundedRectangle(cornerRadius: 10)
-//                                    .fill(.green)
-//                            )
                     }
                     .alert(isPresented: $showAlert) {
                         Alert(title: Text("Oops!"),
@@ -90,7 +101,8 @@ struct BalanceCardView: View {
                 
                 Button(action: {
                     print("tapped withdraw")
-                    showAlert = true
+                    //showAlert = true
+                    showWithdrawSheet.toggle()
                     }) {
                         Text("Withdraw")
                             .bold()
@@ -129,6 +141,7 @@ struct BalanceCardView: View {
 
 struct BalanceCardView_Previews: PreviewProvider {
     static var previews: some View {
-        BalanceCardView(showSheet: .constant(false))
+        BalanceCardView(showDepositSheet: .constant(false), showWithdrawSheet: .constant(false))
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

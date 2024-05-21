@@ -14,6 +14,10 @@ struct MainView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \StockItem.order, ascending: true)],
         animation: .default)
     private var items: FetchedResults<StockItem>
+    
+    //Core Data
+    @FetchRequest(entity: Balance.entity(), sortDescriptors: [])
+    private var balances: FetchedResults<Balance>
 
     
     var body: some View {

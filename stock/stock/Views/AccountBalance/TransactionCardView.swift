@@ -9,38 +9,47 @@ import SwiftUI
 import Foundation
 
 struct TransactionCardView: View {
-    var stockName: String = "AAPL"
+    var transactionType: String = "AAPL"
     var amount: Double = 94.87
-    let colors: [Color] = [.yellow, .red, .purple, .green, .black]
-    var randomColor: Color {
-        colors.randomElement() ?? .yellow // 如果randomElement返回nil，使用黄色作为默认颜色
+    
+    // 根据交易类型设置颜色
+    var transactionColor: Color {
+        switch transactionType {
+        case "Line":
+            return .green
+        case "Bank":
+            return .blue
+        case "ApplePay":
+            return .black
+        case "Withdraw":
+            return .red
+        default:
+            return .gray
+        }
     }
     
     // 创建一个函数来获取并格式化当前日期时间
     func getCurrentFormattedDate() -> String {
         let now = Date()  // 获取当前日期和时间
         let formatter = DateFormatter()  // 创建一个日期格式化器
-        //formatter.dateFormat = "YYYY/MM/dd HH:mm:ss"  // 设置格式化的格式
         formatter.dateFormat = "YYYY/MM/dd"  // 设置格式化的格式
         return formatter.string(from: now)  // 返回格式化后的日期字符串
     }
     
     var body: some View {
-
         VStack {
             HStack {
-                
-                Text(stockName.isEmpty ? "" : String(stockName.first!))
+                Text(transactionType.isEmpty ? "" : String(transactionType.first!))
                     .font(.title.bold())
                     .foregroundColor(.white)
                     .frame(width: 50, height: 50)
                     .background(
                         Circle()
-                            .fill(randomColor)
+                            .fill(transactionColor)
                     )
                 
-                VStack {
-                    Text(stockName)
+                VStack(alignment: .leading) {
+                    Text(transactionType)
                         .bold()
                         .font(.title3)
                     Text("\(getCurrentFormattedDate())")
@@ -51,12 +60,17 @@ struct TransactionCardView: View {
                 
                 Spacer()
                 
-                Text("$\(String(amount))")
-                    .bold()
-                    .font(.title)
-                
+                // 显示负数金额
+                if transactionType == "Withdraw" {
+                    Text(String(format: "$%.2f", -amount))
+                        .bold()
+                        .font(.title)
+                } else {
+                    Text(String(format: "$%.2f", amount))
+                        .bold()
+                        .font(.title)
+                }
             }
-            //Spacer()
         }
         .padding(.horizontal)
         .padding(.vertical)
