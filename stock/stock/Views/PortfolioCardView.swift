@@ -38,6 +38,7 @@ struct PortfolioCardView: View {
                         }
                 }
             }
+            .frame(height: 20) // 固定高度可解決頁面跳動問題
             
             Spacer().frame(height: 10)
             
