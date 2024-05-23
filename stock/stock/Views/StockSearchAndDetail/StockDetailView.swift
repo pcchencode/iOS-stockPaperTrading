@@ -173,6 +173,8 @@ struct StockDetailView: View {
             QuoteDetailView
                 .frame(maxWidth: .infinity, minHeight: 80)
             
+            BuySellButtonsView // 添加买卖按钮视图
+            
             VStack {
                 Spacer()  // 在文字上方添加一個空間填充
                 Text("沒有最近報導")
@@ -432,6 +434,38 @@ struct StockDetailView: View {
 //        }
 //    }
 
+    private var BuySellButtonsView: some View {
+        HStack {
+            Button(action: {
+                // Buy action
+                print("Buy tapped")
+            }) {
+                Text("Buy")
+                    .bold()
+                    .font(.title3)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.red)
+                    .cornerRadius(10)
+            }
+            
+            Button(action: {
+                // Sell action
+                print("Sell tapped")
+            }) {
+                Text("Sell")
+                    .bold()
+                    .font(.title3)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.green)
+                    .cornerRadius(10)
+            }
+        }
+        .padding(.horizontal)
+    }
     
     @State private var isAddedToWatchlist: Bool = false
     

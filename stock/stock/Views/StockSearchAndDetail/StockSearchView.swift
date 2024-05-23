@@ -46,7 +46,7 @@ struct StockSearchView: View {
                 }
                 .sheet(item: $selectedStock) { stock in
                     StockDetailView(stockName: stock.name, stockId: stock.stockId, stockExchange: stock.exchange)
-                        //.presentationDetents([.medium, .large]) //iOS15沒有這個很坑
+                        //.presentationDetents([.fraction(0.7), .large]) //iOS15沒有這個很坑
                 }
             }
             .task {
