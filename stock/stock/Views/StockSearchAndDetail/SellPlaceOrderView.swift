@@ -57,13 +57,18 @@ struct SellPlaceOrderView: View {
                 }
             } else {
                 VStack {
+                    Text("You have \(portfolioQuantity) shares of \(stockName)")
+                        .font(.subheadline)
+                        .foregroundColor(.green)
+                        .padding(.bottom, 10)
+
                     TextField("Enter number of shares", text: $numberOfShares)
                         .font(.system(size: 50))
                         .keyboardType(.numberPad)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.green)
                     
-                    Text("How many shares of \(stockName) would you like?")
+                    Text("How many shares of \(stockName) would you like to sell?")
                         .font(.subheadline)
                         .foregroundColor(.green)
                     
@@ -78,7 +83,7 @@ struct SellPlaceOrderView: View {
                         .bold()
                     
                     if !numberOfShares.isEmpty {
-                        if calculateTotalValue() > Double(portfolioQuantity) * stockPrice {
+                        if Int64(numberOfShares) ?? 0 > portfolioQuantity {
                             Text("You don't have enough shares")
                                 .foregroundColor(.red)
                         }
@@ -159,7 +164,7 @@ struct SellPlaceOrderView: View {
         transaction.id = UUID()
         transaction.amount = totalValue
         transaction.date = Date()
-        transaction.type = "Sell-Order"
+        transaction.type = "Order-Sell"
         
         // Update the balance
         if let balanceEntity = balances.first {
