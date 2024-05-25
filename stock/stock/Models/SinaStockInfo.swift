@@ -46,10 +46,11 @@ func parseStockInfo(from string: String) -> SinaStockInfo? {
     // 去掉最后的逗号
     let cleanedString = string.hasSuffix(",") ? String(string.dropLast()) : string
     let components = cleanedString.components(separatedBy: ",")
-//    guard components.count == 32 else {
-//        print("Expected 32 components, but found \(components.count)")
-//        return nil
-//    }
+    // 加入檢查段，不然模擬器會崩潰
+    guard components.count == 34 else {
+        print("Expected 34 components, but found \(components.count)")
+        return nil
+    }
     
     return SinaStockInfo(
         name: components[0],
