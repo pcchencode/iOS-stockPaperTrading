@@ -50,9 +50,7 @@ struct StockDetailView: View {
     //Core Data
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    
     @State private var itemTitle = ""
-    
     @FetchRequest(sortDescriptors:[]) private var items:FetchedResults<StockItem>
     
     // Quote variable
@@ -65,8 +63,12 @@ struct StockDetailView: View {
     @State private var volume: Int?
     @State private var bidPrice: Double?
     @State private var askPrice: Double?
+    
+    // Showing Sheet
+    @State private var showBuyPlaceOrderView = false
+    @State private var showSellPlaceOrderView = false
         
-    private func saveItem(newId: String, newName: String) {
+    private func saveItem(newId: String, newName: String, newExchange: String) {
         // 首先檢查是否已經有同樣的 stockId 存在
         let fetchRequest: NSFetchRequest<StockItem> = StockItem.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "stockId == %@", newId)
@@ -77,6 +79,7 @@ struct StockDetailView: View {
                 let newItem = StockItem(context: viewContext)
                 newItem.stockId = newId
                 newItem.stockName = newName
+                newItem.stockExchange = newExchange
                 newItem.order = (items.last?.order ?? 0) + 1
                 newItem.timestamp = Date()
                 try viewContext.save()
@@ -90,6 +93,7 @@ struct StockDetailView: View {
     }
         
     var body: some View {
+//        Text("Hello World")
         VStack(alignment: .leading, spacing: 0) {
             Spacer()
             Spacer()
@@ -109,6 +113,13 @@ struct StockDetailView: View {
              // 畫面加載時檢查股票是否已在 Watchlist
              isAddedToWatchlist = isStockAdded(stockId: stockId)
          }
+        .sheet(isPresented: $showBuyPlaceOrderView) {
+            BuyPlaceOrderView(stockID: stockId, stockName: stockName, stockExchange: stockExchange)
+        }
+        .sheet(isPresented: $showSellPlaceOrderView) {
+            SellPlaceOrderView(stockID: stockId, stockName: stockName, stockExchange: stockExchange)
+        }
+
 
     
     }
@@ -438,6 +449,7 @@ struct StockDetailView: View {
         HStack {
             Button(action: {
                 // Buy action
+                showBuyPlaceOrderView = true
                 print("Buy tapped")
             }) {
                 Text("Buy")
@@ -452,6 +464,7 @@ struct StockDetailView: View {
             
             Button(action: {
                 // Sell action
+                showSellPlaceOrderView = true
                 print("Sell tapped")
             }) {
                 Text("Sell")
@@ -476,7 +489,7 @@ struct StockDetailView: View {
     private var AddWatchlistButton: some View {
         Button(action: {
             if !isAddedToWatchlist {
-                saveItem(newId: stockId, newName: stockName)
+                saveItem(newId: stockId, newName: stockName, newExchange: stockExchange)
                 isAddedToWatchlist = true
             }
         }) {

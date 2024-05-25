@@ -31,7 +31,6 @@ struct MainView: View {
             
             
             AccountBalanceView()
-                .badge("!")
                 .tabItem {
                     Label("Account Balance", systemImage: "person.crop.circle.fill")
                 }

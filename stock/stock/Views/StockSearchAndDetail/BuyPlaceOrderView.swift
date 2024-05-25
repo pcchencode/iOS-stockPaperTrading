@@ -6,114 +6,201 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct BuyPlaceOrderView: View {
     @State private var numberOfShares = ""
-    @State private var stockPrice: Double = 87.00 // 示例股价，你可以动态获取
-    @State private var stockName: String = "鴻海" // 示例股价，你可以动态获取
+    @State private var stockPrice: Double = 0.00
+    @State private var orderPlaced = false // 添加订单状态
+    var stockID: String
+    var stockName: String
+    var stockExchange: String
+    
+    // Core Data
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(entity: Balance.entity(), sortDescriptors: [])
+    private var balances: FetchedResults<Balance>
     
     var body: some View {
         VStack {
-            Spacer()
-            TextField("Enter number of shares", text: $numberOfShares)
-                .font(.system(size: 50))
-                .keyboardType(.numberPad)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.red) // 设置文本颜色为红色
-            
-            Text("How many shares of \(stockName) would you like?")
-                .font(.subheadline)
-                .foregroundColor(.red) // 设置文本颜色为红色
-            
-            Divider()
-                .padding(.vertical)
-            
-            Text("Your total cost will be")
-                .font(.headline)
-            
-            Text("$\(calculateTotalCost(), specifier: "%.2f")")
-                .font(.largeTitle)
-                .bold()
-            
-            Spacer()
-            
-            NumberPad(numberOfShares: $numberOfShares, buttonColor: .red)
-                .padding(.horizontal, 20) // 增加水平填充
-            
-            Button(action: {
-                // Place order action
-            }) {
-                Text("Place Order")
-                    .bold()
-                    .font(.title)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.red)
-                    .cornerRadius(10)
+            VStack {
+                Spacer().frame(height: 50)
+                // 拉桿視圖
+                VStack {
+                    RoundedRectangle(cornerRadius: 5.0)
+                        .frame(width: 40, height: 6)
+                        .foregroundColor(.gray)
+                        .padding(.top, 1)
+                        .padding(.bottom, 12)
+                }
+                Spacer().frame(height: 20)
             }
-            .padding()
+            .fixedSize(horizontal: false, vertical: true) // 确保拉桿视图不会随着其他内容变化
+
+            Spacer()
+            
+            if orderPlaced {
+                // 显示下单成功的视图
+                VStack {
+                    Image(systemName: "checkmark.seal.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.red)
+                    Text("Order Placed")
+                        .font(.largeTitle)
+                        .bold()
+                        .foregroundColor(.red)
+                }
+            } else {
+                VStack {
+                    TextField("Enter number of shares", text: $numberOfShares)
+                        .font(.system(size: 50))
+                        .keyboardType(.numberPad)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.red)
+                    
+                    Text("How many shares of \(stockName) would you like?")
+                        .font(.subheadline)
+                        .foregroundColor(.red)
+                    
+                    Divider()
+                        .padding(.vertical)
+                    
+                    Text("Your total cost will be")
+                        .font(.headline)
+                    
+                    Text("$\(calculateTotalCost(), specifier: "%.2f")")
+                        .font(.largeTitle)
+                        .bold()
+                    
+                    if !numberOfShares.isEmpty {
+                        if calculateTotalCost() > (balances.first?.balance ?? 0.0) {
+                            if let balance = balances.first?.balance {
+                                Text("Available: $\(balance, specifier: "%.2f")")
+                                    .foregroundColor(.red)
+                            }
+                            Text("You don't have enough funds")
+                                .foregroundColor(.red)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    NumberPad(numberOfShares: $numberOfShares, buttonColor: .red)
+                        .padding(.horizontal, 20)
+                    
+                    Button(action: {
+                        // Place order action
+                        placeOrder()
+                    }) {
+                        Text("Place Order")
+                            .bold()
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(isBalanceSufficient() ? Color.red : Color.red.opacity(0.3))
+                            .cornerRadius(10)
+                    }
+                    .padding()
+                    .disabled(!isBalanceSufficient())
+                }
+            }
+            
+            Spacer()
         }
         .padding()
+        .onAppear {
+            fetchStockPrice()
+        }
+    }
+    
+    private func fetchStockPrice() {
+        // Replace this with the actual API call to fetch the stock price
+        Task {
+            do {
+                let stockInfoList = try await Webservice().getSinaStockInfo(stockExchange: stockExchange, stockId: stockID)
+                if let stockInfo = stockInfoList.first {
+                    stockPrice = stockInfo.currentPrice
+                } else {
+                    print("No stock information available.")
+                }
+            } catch {
+                print("Failed to fetch stock information: \(error)")
+            }
+        }
     }
     
     private func calculateTotalCost() -> Double {
         let shares = Double(numberOfShares) ?? 0
         return shares * stockPrice
     }
-}
-
-struct NumberPad: View {
-    @Binding var numberOfShares: String
-    var buttonColor: Color
     
-    let buttons: [[String]] = [
-        ["1", "2", "3"],
-        ["4", "5", "6"],
-        ["7", "8", "9"],
-        ["", "0", "⌫"]
-    ]
-    
-    var body: some View {
-        VStack(spacing: 20) { // 增加垂直间距
-            ForEach(buttons, id: \.self) { row in
-                HStack(spacing: 20) { // 增加水平间距
-                    ForEach(row, id: \.self) { button in
-                        if button.isEmpty {
-                            Spacer()
-                                .frame(width: 100, height: 100) // 设置空白间隔的大小
-                        } else {
-                            Button(action: {
-                                self.buttonTapped(button: button)
-                            }) {
-                                Text(button)
-                                    .font(.largeTitle)
-                                    .frame(width: 100, height: 100) // 增加按钮尺寸
-                                    .background(buttonColor.opacity(0.1))
-                                    .foregroundColor(buttonColor) // 设置按钮文本颜色为红色
-                                    .cornerRadius(50) // 更新圆角半径以适应新的尺寸
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    private func isBalanceSufficient() -> Bool {
+        let totalCost = calculateTotalCost()
+        let balance = balances.first?.balance ?? 0.0
+        return totalCost <= balance && totalCost > 0
     }
     
-    private func buttonTapped(button: String) {
-        switch button {
-        case "⌫":
-            if !numberOfShares.isEmpty {
-                numberOfShares.removeLast()
+    private func placeOrder() {
+        // Perform order placement logic here
+        let totalCost = calculateTotalCost()
+        
+        // Create a new transaction
+        let transaction = Transaction(context: viewContext)
+        transaction.id = UUID()
+        transaction.amount = totalCost
+        transaction.date = Date()
+        transaction.type = "Buy-Order"
+        
+        // Update the balance
+        if let balanceEntity = balances.first {
+            balanceEntity.balance -= totalCost
+        }
+        
+        // Check if the stock already exists in the portfolio
+        let fetchRequest: NSFetchRequest<PortfolioItem> = PortfolioItem.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "stockId == %@", stockID)
+        
+        do {
+            let portfolioItems = try viewContext.fetch(fetchRequest)
+            
+            if let existingItem = portfolioItems.first {
+                // Update the quantity of the existing portfolio item
+                existingItem.quantity += Int64(numberOfShares) ?? 0
+            } else {
+                // Create a new portfolio item
+                let portfolioItem = PortfolioItem(context: viewContext)
+                portfolioItem.id = UUID()
+                portfolioItem.stockId = stockID
+                portfolioItem.stockName = stockName
+                portfolioItem.stockExchange = stockExchange
+                portfolioItem.timestamp = Date()
+                portfolioItem.quantity = Int64(numberOfShares) ?? 0
             }
-        default:
-            numberOfShares.append(button)
+            
+            // Save the context
+            try viewContext.save()
+            orderPlaced = true
+        } catch {
+            print("Failed to save transaction or update portfolio: \(error.localizedDescription)")
+        }
+
+        // 更新余额，持仓信息和记录交易信息可以在这里完成
+        // updateBalance(totalCost: calculateTotalCost())
+        // updatePortfolio()
+        // recordTransaction(totalCost: calculateTotalCost())
+        
+        // 订单成功后更新状态
+        withAnimation {
+            orderPlaced = true
         }
     }
 }
 
 struct BuyPlaceOrderView_Previews: PreviewProvider {
     static var previews: some View {
-        BuyPlaceOrderView()
+        BuyPlaceOrderView(stockID: "300162", stockName: "雷曼光电", stockExchange: "sz")
     }
 }
