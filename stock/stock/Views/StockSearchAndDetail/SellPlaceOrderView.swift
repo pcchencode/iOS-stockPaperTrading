@@ -164,7 +164,7 @@ struct SellPlaceOrderView: View {
         transaction.id = UUID()
         transaction.amount = totalValue
         transaction.date = Date()
-        transaction.type = "Order-Sell"
+        transaction.type = "Sell-Order"
         
         // Update the balance
         if let balanceEntity = balances.first {
