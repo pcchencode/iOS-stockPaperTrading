@@ -23,6 +23,10 @@ struct TransactionCardView: View {
             return .black
         case "Withdraw":
             return .red
+        case "Buy-Order":
+            return .red
+        case "Sell-Order":
+            return .green
         default:
             return .gray
         }
@@ -65,6 +69,15 @@ struct TransactionCardView: View {
                     Text(String(format: "$%.2f", -amount))
                         .bold()
                         .font(.title)
+                } else if transactionType == "Buy-Order" {
+                    Text(String(format: "$%.2f", -amount))
+                        .bold()
+                        .font(.title)
+                } else if transactionType == "Sell-Order" {
+                    Text(String(format: "$%.2f", amount))
+                        .bold()
+                        .font(.title)
+                    
                 } else {
                     Text(String(format: "$%.2f", amount))
                         .bold()

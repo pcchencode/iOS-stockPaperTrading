@@ -40,6 +40,9 @@
 		2CE5873A2BDEAEE900F85BB2 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE587392BDEAEE900F85BB2 /* AddItemView.swift */; };
 		2CF27F5B2BF9292D00A1ADB3 /* SinaStockInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF27F5A2BF9292D00A1ADB3 /* SinaStockInfo.swift */; };
 		2CFAD6EE2BE0730000C2EE7D /* StockDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CFAD6ED2BE0730000C2EE7D /* StockDetailView.swift */; };
+		CE2006CC2BFFA998004F2023 /* SellPlaceOrderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2006CB2BFFA998004F2023 /* SellPlaceOrderView.swift */; };
+		CE2006CE2BFFABEC004F2023 /* NumberPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2006CD2BFFABEC004F2023 /* NumberPad.swift */; };
+		CE2C85B72BFF13FF00B48745 /* BuyPlaceOrderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C85B62BFF13FF00B48745 /* BuyPlaceOrderView.swift */; };
 		CE776C9F2BFBE8E8003DC127 /* WithdrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE776C9E2BFBE8E8003DC127 /* WithdrawView.swift */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +82,9 @@
 		2CE587392BDEAEE900F85BB2 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
 		2CF27F5A2BF9292D00A1ADB3 /* SinaStockInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinaStockInfo.swift; sourceTree = "<group>"; };
 		2CFAD6ED2BE0730000C2EE7D /* StockDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockDetailView.swift; sourceTree = "<group>"; };
+		CE2006CB2BFFA998004F2023 /* SellPlaceOrderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellPlaceOrderView.swift; sourceTree = "<group>"; };
+		CE2006CD2BFFABEC004F2023 /* NumberPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPad.swift; sourceTree = "<group>"; };
+		CE2C85B62BFF13FF00B48745 /* BuyPlaceOrderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyPlaceOrderView.swift; sourceTree = "<group>"; };
 		CE776C9E2BFBE8E8003DC127 /* WithdrawView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,6 +105,9 @@
 				2C49E4CE2BD1C4D500A75CC2 /* StockSearchView.swift */,
 				2CE5870D2BDC7C5500F85BB2 /* AddStockSearchView.swift */,
 				2CFAD6ED2BE0730000C2EE7D /* StockDetailView.swift */,
+				CE2C85B62BFF13FF00B48745 /* BuyPlaceOrderView.swift */,
+				CE2006CB2BFFA998004F2023 /* SellPlaceOrderView.swift */,
+				CE2006CD2BFFABEC004F2023 /* NumberPad.swift */,
 				2C40F77C2BEAE57600BFF4FA /* DateRangePickerView.swift */,
 			);
 			path = StockSearchAndDetail;
@@ -266,6 +275,7 @@
 				2C10B7F92BC723D20041C1DA /* Webservice.swift in Sources */,
 				2CB65CFC2BE1A8AA001EFAFB /* AccountBalanceView.swift in Sources */,
 				2C6FF66F2BC748E200711610 /* Stock.swift in Sources */,
+				CE2C85B72BFF13FF00B48745 /* BuyPlaceOrderView.swift in Sources */,
 				2CB65D032BE1CD1D001EFAFB /* TransactionHeaderView.swift in Sources */,
 				2C40F77D2BEAE57600BFF4FA /* DateRangePickerView.swift in Sources */,
 				2C4CAE562BC5B8D100F2051E /* stockApp.swift in Sources */,
@@ -274,11 +284,13 @@
 				CE776C9F2BFBE8E8003DC127 /* WithdrawView.swift in Sources */,
 				2C5B9F2A2BD377D8007C4541 /* MainView.swift in Sources */,
 				2CE5870E2BDC7C5500F85BB2 /* AddStockSearchView.swift in Sources */,
+				CE2006CE2BFFABEC004F2023 /* NumberPad.swift in Sources */,
 				2C10B7FB2BC724290041C1DA /* Movie.swift in Sources */,
 				2C49E4CD2BD051F200A75CC2 /* HeaderView.swift in Sources */,
 				2CB65D072BE20831001EFAFB /* NewDepositView.swift in Sources */,
 				2CE587362BDE269E00F85BB2 /* OrderList.xcdatamodeld in Sources */,
 				2C49E4D12BD2461100A75CC2 /* PortfolioCardView.swift in Sources */,
+				CE2006CC2BFFA998004F2023 /* SellPlaceOrderView.swift in Sources */,
 				2C5FB6C62BDC40F700867B3A /* EditWatchlistView.swift in Sources */,
 				2C10B7FF2BC724C60041C1DA /* MovieListViewModel.swift in Sources */,
 				2CE5873A2BDEAEE900F85BB2 /* AddItemView.swift in Sources */,

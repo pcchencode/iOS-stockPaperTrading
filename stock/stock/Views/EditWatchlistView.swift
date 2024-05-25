@@ -22,6 +22,8 @@ struct EditWatchlistView: View {
                 ForEach(items, id: \.self) { item in
                     HStack {
                         Text(item.stockName ?? "Unknown")
+                        Text(item.stockExchange ?? "Unknown")
+                        Text(item.stockId ?? "Unknown")
                         Text("\(item.order)")
                     }
                 }
