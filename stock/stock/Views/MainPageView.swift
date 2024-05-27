@@ -26,46 +26,54 @@ struct MainPageView: View {
     @State private var isShowingEditWatchlistSheet: Bool = false
     
     var body: some View {
-        ScrollView {
-            VStack {
-                HeaderView(showSheet: $isShowingStockSearchSheet)
-                    .padding()
-                
-                PortfolioCardView()
-                
-                PortfolioView()
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(portfolioItems, id: \.self) { portfolioItem in
-                            PortfolioCards(
-                                stockId: portfolioItem.stockId ?? "",
-                                stockName: portfolioItem.stockName ?? "",
-                                stockExchange: portfolioItem.stockExchange ?? "",
-                                stockQuantity:  portfolioItem.quantity  // 您可以根据您的逻辑设置正确的值
-                            )
+        NavigationView {
+            ScrollView {
+                VStack {
+                    HeaderView(showSheet: $isShowingStockSearchSheet)
+                        .padding()
+                    
+                    PortfolioCardView()
+                    
+                    PortfolioView()
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(portfolioItems, id: \.self) { portfolioItem in
+                                NavigationLink(destination: StockDetailView(stockName: portfolioItem.stockName ?? "", stockId: portfolioItem.stockId ?? "", stockExchange: portfolioItem.stockExchange ?? "")) {
+                                    PortfolioCards(
+                                        stockId: portfolioItem.stockId ?? "",
+                                        stockName: portfolioItem.stockName ?? "",
+                                        stockExchange: portfolioItem.stockExchange ?? "",
+                                        stockQuantity: portfolioItem.quantity  // 您可以根据您的逻辑设置正确的值
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle()) // 这里应用自定义样式
+                            }
                         }
                     }
-                }
-                
-                WatchListView(showSheet: $isShowingEditWatchlistSheet)
+                    
+                    WatchListView(showSheet: $isShowingEditWatchlistSheet)
 
-                ScrollView {
-                    ForEach(items, id: \.self) { item in
-                        StockCardView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")
+                    ScrollView {
+                        ForEach(items, id: \.self) { item in
+                            NavigationLink(destination: StockDetailView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")) {
+                                StockCardView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")
+                            }
+                            .buttonStyle(PlainButtonStyle()) // 这里应用自定义样式
+                        }
                     }
+                    .frame(maxWidth: .infinity, maxHeight: 500)
+                    
+                    Spacer()
                 }
-                .frame(maxWidth: .infinity, maxHeight: 500)
-                
-                Spacer()
-            }
-            .padding()
-            .edgesIgnoringSafeArea(.bottom)
-            .sheet(isPresented: $isShowingStockSearchSheet) {
-                StockSearchView()
-            }
-            .sheet(isPresented: $isShowingEditWatchlistSheet) {
-                EditWatchlistView()
+                .padding()
+                .edgesIgnoringSafeArea(.bottom)
+                .sheet(isPresented: $isShowingStockSearchSheet) {
+                    StockSearchView()
+                }
+                .sheet(isPresented: $isShowingEditWatchlistSheet) {
+                    EditWatchlistView()
+                }
             }
         }
     }
