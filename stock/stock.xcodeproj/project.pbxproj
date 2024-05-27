@@ -44,6 +44,7 @@
 		CE2006CE2BFFABEC004F2023 /* NumberPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2006CD2BFFABEC004F2023 /* NumberPad.swift */; };
 		CE2C85B72BFF13FF00B48745 /* BuyPlaceOrderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C85B62BFF13FF00B48745 /* BuyPlaceOrderView.swift */; };
 		CE776C9F2BFBE8E8003DC127 /* WithdrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE776C9E2BFBE8E8003DC127 /* WithdrawView.swift */; };
+		CEFF47CC2C05080B002EB01A /* RefreshableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFF47CB2C05080B002EB01A /* RefreshableScrollView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +87,7 @@
 		CE2006CD2BFFABEC004F2023 /* NumberPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPad.swift; sourceTree = "<group>"; };
 		CE2C85B62BFF13FF00B48745 /* BuyPlaceOrderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyPlaceOrderView.swift; sourceTree = "<group>"; };
 		CE776C9E2BFBE8E8003DC127 /* WithdrawView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawView.swift; sourceTree = "<group>"; };
+		CEFF47CB2C05080B002EB01A /* RefreshableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +185,7 @@
 				2C4CAE572BC5B8D100F2051E /* ContentView.swift */,
 				2C5B9F292BD377D7007C4541 /* MainView.swift */,
 				2C49E4CA2BD051E200A75CC2 /* MainPageView.swift */,
+				CEFF47CB2C05080B002EB01A /* RefreshableScrollView.swift */,
 				2C5B9F272BD35D98007C4541 /* StockCardView.swift */,
 				2C49E4D02BD2461100A75CC2 /* PortfolioCardView.swift */,
 				2C49E4D22BD2EB6B00A75CC2 /* WatchListView.swift */,
@@ -297,6 +300,7 @@
 				2CF27F5B2BF9292D00A1ADB3 /* SinaStockInfo.swift in Sources */,
 				2C6FF6712BC7499600711610 /* StockListViewModel.swift in Sources */,
 				2C3F367B2BCA6A5B00E571DC /* StockInfoViewModel.swift in Sources */,
+				CEFF47CC2C05080B002EB01A /* RefreshableScrollView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

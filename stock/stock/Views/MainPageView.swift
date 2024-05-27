@@ -24,10 +24,11 @@ struct MainPageView: View {
     
     @State private var isShowingStockSearchSheet: Bool = false
     @State private var isShowingEditWatchlistSheet: Bool = false
+    @State private var refreshID = UUID()
     
     var body: some View {
         NavigationView {
-            ScrollView {
+            RefreshableScrollView {
                 VStack {
                     HeaderView(showSheet: $isShowingStockSearchSheet)
                         .padding()
@@ -44,10 +45,10 @@ struct MainPageView: View {
                                         stockId: portfolioItem.stockId ?? "",
                                         stockName: portfolioItem.stockName ?? "",
                                         stockExchange: portfolioItem.stockExchange ?? "",
-                                        stockQuantity: portfolioItem.quantity  // 您可以根据您的逻辑设置正确的值
+                                        stockQuantity: portfolioItem.quantity
                                     )
                                 }
-                                .buttonStyle(PlainButtonStyle()) // 这里应用自定义样式
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
                     }
@@ -59,7 +60,7 @@ struct MainPageView: View {
                             NavigationLink(destination: StockDetailView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")) {
                                 StockCardView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")
                             }
-                            .buttonStyle(PlainButtonStyle()) // 这里应用自定义样式
+                            .buttonStyle(PlainButtonStyle())
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: 500)
@@ -74,7 +75,10 @@ struct MainPageView: View {
                 .sheet(isPresented: $isShowingEditWatchlistSheet) {
                     EditWatchlistView()
                 }
+            } onRefresh: {
+                refreshID = UUID() // 改变 ID 以触发视图重新加载
             }
+            .id(refreshID)
         }
     }
 }
