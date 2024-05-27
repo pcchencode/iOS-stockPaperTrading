@@ -28,12 +28,12 @@ struct AddStockSearchView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // 在這裡添加拉桿視圖
-            RoundedRectangle(cornerRadius: 5.0)
-                .frame(width: 40, height: 6)
-                .foregroundColor(.gray)
-                .padding(.top, 8)
-                .padding(.bottom, 12)
+            // 在這裡添加拉桿視圖(Add Stock Search 拿掉)
+//            RoundedRectangle(cornerRadius: 5.0)
+//                .frame(width: 40, height: 6)
+//                .foregroundColor(.gray)
+//                .padding(.top, 8)
+//                .padding(.bottom, 12)
             
             // 單獨是為了把 NavigationView 拿掉
             VStack(spacing: 0) {
