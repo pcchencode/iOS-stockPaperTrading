@@ -25,14 +25,21 @@ struct MainView: View {
             MainPageView()
                 .tabItem {
                     Image(systemName: "house.fill")
-                    Text("Home")
+                    Text("首頁")
+                        .font(.largeTitle)
+                }
+            
+            QueuePurchaseView()
+                .tabItem {
+                    Image(systemName: "text.line.first.and.arrowtriangle.forward")
+                    Text("排隊購買")
                         .font(.largeTitle)
                 }
             
             
             AccountBalanceView()
                 .tabItem {
-                    Label("Account Balance", systemImage: "person.crop.circle.fill")
+                    Label("帳戶餘額", systemImage: "person.crop.circle.fill")
                 }
         
         }
