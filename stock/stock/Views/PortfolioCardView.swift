@@ -139,8 +139,8 @@ struct PortfolioCardView: View {
     }
     
     private func startTimer() {
-        //每10秒會去打API取得Portfolio的現價(先暫時調高不要一直打)
-        timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
+        //每10秒會去打API取得Portfolio的現價(先暫時調高不要一直打，每5分鐘打一次)
+        timer = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { _ in
             fetchData()
         }
     }
