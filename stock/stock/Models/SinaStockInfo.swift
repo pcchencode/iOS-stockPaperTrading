@@ -47,8 +47,8 @@ func parseStockInfo(from string: String) -> SinaStockInfo? {
     let cleanedString = string.hasSuffix(",") ? String(string.dropLast()) : string
     let components = cleanedString.components(separatedBy: ",")
     // 加入檢查段，不然模擬器會崩潰
-    guard components.count == 34 else {
-        print("Expected 34 components, but found \(components.count)")
+    guard components.count <= 34 else {
+        print("Expected less and equal to 34 components, but found \(components.count)")
         return nil
     }
     
