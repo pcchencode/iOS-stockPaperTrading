@@ -76,7 +76,9 @@ struct MainPageView: View {
                     EditWatchlistView()
                 }
             } onRefresh: {
-                refreshID = UUID() // 改变 ID 以触发视图重新加载
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    refreshID = UUID() // 改变 ID 以触发视图重新加载
+                }
             }
             .id(refreshID)
         }
