@@ -126,15 +126,15 @@
 		2C4CAE542BC5B8D100F2051E /* stock */ = {
 			isa = PBXGroup;
 			children = (
+				2CE587372BDE271F00F85BB2 /* Persistence.swift */,
+				2CE587392BDEAEE900F85BB2 /* AddItemView.swift */,
+				2C4CAE552BC5B8D100F2051E /* stockApp.swift */,
 				2C5FB6C72BDC411900867B3A /* Models */,
 				2CC3CD882BDAD069006ECC21 /* Views */,
 				2C10B8002BC72B420041C1DA /* Info.plist */,
-				2C4CAE552BC5B8D100F2051E /* stockApp.swift */,
 				2C4CAE592BC5B8D700F2051E /* Assets.xcassets */,
 				2C4CAE5B2BC5B8D700F2051E /* Preview Content */,
 				2CE587342BDE269E00F85BB2 /* OrderList.xcdatamodeld */,
-				2CE587372BDE271F00F85BB2 /* Persistence.swift */,
-				2CE587392BDEAEE900F85BB2 /* AddItemView.swift */,
 			);
 			path = stock;
 			sourceTree = "<group>";
