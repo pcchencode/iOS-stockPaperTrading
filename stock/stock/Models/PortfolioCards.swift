@@ -17,7 +17,7 @@ struct PortfolioCards: View {
     var body: some View {
         VStack {
             HStack {
-                Image(systemName: "appletv.fill")
+                Image(systemName: "chart.line.uptrend.xyaxis.circle")
                     .font(.system(size: 30))
                 
                 VStack(alignment: .leading) {
