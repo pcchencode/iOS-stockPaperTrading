@@ -28,64 +28,71 @@ struct MainPageView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                // Fixed HeaderView
-                HeaderView(showSheet: $isShowingStockSearchSheet)
-                    .padding()
-                    .background(Color.white)
-                    .zIndex(1) // Ensure the header is on top
-                
-                // Scrollable content
-                RefreshableScrollView {
-                    VStack {
-                        PortfolioCardView()
-                        
-                        PortfolioView()
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(portfolioItems, id: \.self) { portfolioItem in
-                                    NavigationLink(destination: StockDetailView(stockName: portfolioItem.stockName ?? "", stockId: portfolioItem.stockId ?? "", stockExchange: portfolioItem.stockExchange ?? "")) {
-                                        PortfolioCards(
-                                            stockId: portfolioItem.stockId ?? "",
-                                            stockName: portfolioItem.stockName ?? "",
-                                            stockExchange: portfolioItem.stockExchange ?? "",
-                                            stockQuantity: portfolioItem.quantity
-                                        )
+            ZStack {
+                // Background content
+                VStack {
+                    RefreshableScrollView {
+                        VStack(spacing: 16) { // 添加適當的間距
+                            PortfolioCardView()
+                                .padding(.top, 20) // 增加 PortfolioCardView 的頂部間距
+                            
+                            PortfolioView()
+                            
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(portfolioItems, id: \.self) { portfolioItem in
+                                        NavigationLink(destination: StockDetailView(stockName: portfolioItem.stockName ?? "", stockId: portfolioItem.stockId ?? "", stockExchange: portfolioItem.stockExchange ?? "")) {
+                                            PortfolioCards(
+                                                stockId: portfolioItem.stockId ?? "",
+                                                stockName: portfolioItem.stockName ?? "",
+                                                stockExchange: portfolioItem.stockExchange ?? "",
+                                                stockQuantity: portfolioItem.quantity
+                                            )
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                }
+                            }
+                            
+                            WatchListView(showSheet: $isShowingEditWatchlistSheet)
+
+                            ScrollView {
+                                ForEach(items, id: \.self) { item in
+                                    NavigationLink(destination: StockDetailView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")) {
+                                        StockCardView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")
                                     }
                                     .buttonStyle(PlainButtonStyle())
                                 }
                             }
+                            .frame(maxWidth: .infinity, maxHeight: 500)
+                            
+                            Spacer()
                         }
-                        
-                        WatchListView(showSheet: $isShowingEditWatchlistSheet)
-
-                        ScrollView {
-                            ForEach(items, id: \.self) { item in
-                                NavigationLink(destination: StockDetailView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")) {
-                                    StockCardView(stockName: item.stockName ?? "", stockId: item.stockId ?? "", stockExchange: item.stockExchange ?? "")
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
+                        .padding(.top, 100) // 增加頂部間距，讓出 HeaderView 的空間
+                        .padding()
+                        .edgesIgnoringSafeArea(.bottom)
+                        .sheet(isPresented: $isShowingStockSearchSheet) {
+                            StockSearchView()
                         }
-                        .frame(maxWidth: .infinity, maxHeight: 500)
-                        
-                        Spacer()
+                        .sheet(isPresented: $isShowingEditWatchlistSheet) {
+                            EditWatchlistView()
+                        }
+                    } onRefresh: {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            refreshID = UUID() // 改变 ID 以触发视图重新加载
+                        }
                     }
-                    .padding()
-                    .edgesIgnoringSafeArea(.bottom)
-                    .sheet(isPresented: $isShowingStockSearchSheet) {
-                        StockSearchView()
-                    }
-                    .sheet(isPresented: $isShowingEditWatchlistSheet) {
-                        EditWatchlistView()
-                    }
-                } onRefresh: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        refreshID = UUID() // 改变 ID 以触发视图重新加载
-                    }
+                    .id(refreshID)
                 }
-                .id(refreshID)
+                
+                // Header view with transparent background
+                VStack {
+                    HeaderView(showSheet: $isShowingStockSearchSheet)
+                        .background(.ultraThinMaterial) // 使用毛玻璃效果背景
+                        .padding(.top, 0) // 調整頂部padding
+                        .zIndex(1)
+                    Spacer()
+                }
             }
         }
     }
@@ -98,4 +105,3 @@ struct MainPageView_Previews: PreviewProvider {
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
     }
 }
-
