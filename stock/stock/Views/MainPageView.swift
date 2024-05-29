@@ -29,12 +29,14 @@ struct MainPageView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Background content
                 VStack {
+                    Spacer()
+                        .frame(height: 130) // 頂部的留白區域，確保 `HeaderView` 不會遮擋 `RefreshableScrollView`
+                    
                     RefreshableScrollView {
                         VStack(spacing: 16) { // 添加適當的間距
                             PortfolioCardView()
-                                .padding(.top, 20) // 增加 PortfolioCardView 的頂部間距
+                                .padding(.top, 0) // 移除 PortfolioCardView 的頂部間距
                             
                             PortfolioView()
                             
@@ -68,7 +70,6 @@ struct MainPageView: View {
                             
                             Spacer()
                         }
-                        .padding(.top, 100) // 增加頂部間距，讓出 HeaderView 的空間
                         .padding()
                         .edgesIgnoringSafeArea(.bottom)
                         .sheet(isPresented: $isShowingStockSearchSheet) {
@@ -85,7 +86,6 @@ struct MainPageView: View {
                     .id(refreshID)
                 }
                 
-                // Header view with transparent background
                 VStack {
                     HeaderView(showSheet: $isShowingStockSearchSheet)
                         .background(.ultraThinMaterial) // 使用毛玻璃效果背景
