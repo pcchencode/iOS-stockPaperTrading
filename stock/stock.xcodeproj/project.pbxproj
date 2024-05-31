@@ -130,7 +130,6 @@
 		2C4CAE542BC5B8D100F2051E /* stock */ = {
 			isa = PBXGroup;
 			children = (
-				CECC7B232C09B21700AFF0CC /* InfiniteScrollView.swift */,
 				2CE587372BDE271F00F85BB2 /* Persistence.swift */,
 				2CE587392BDEAEE900F85BB2 /* AddItemView.swift */,
 				2C4CAE552BC5B8D100F2051E /* stockApp.swift */,
@@ -191,6 +190,7 @@
 				2C5B9F292BD377D7007C4541 /* MainView.swift */,
 				CEFF47CD2C052C77002EB01A /* QueuePurchaseView.swift */,
 				2C49E4CA2BD051E200A75CC2 /* MainPageView.swift */,
+				CECC7B232C09B21700AFF0CC /* InfiniteScrollView.swift */,
 				CEFF47CB2C05080B002EB01A /* RefreshableScrollView.swift */,
 				2C5B9F272BD35D98007C4541 /* StockCardView.swift */,
 				2C49E4D02BD2461100A75CC2 /* PortfolioCardView.swift */,
