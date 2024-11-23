@@ -37,6 +37,12 @@ struct QueuePurchaseView: View {
     @State private var numberOfShares: String = ""
     @State private var queueList: [(stock: StockViewModel, quantity: Int, currentPrice: Double?, limitUpPrice: Double?)] = []
     @State private var showDropdown = false
+    @State private var timer: Timer? // 用於控制定時器
+    // Core Data
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(entity: Balance.entity(), sortDescriptors: [])
+    private var balances: FetchedResults<Balance>
+
 
     var body: some View {
         GeometryReader { geometry in
@@ -184,7 +190,8 @@ struct QueuePurchaseView: View {
                             
                             // 发送系统通知按钮
                             Button(action: {
-                                sendNotification()
+                                //sendNotification()
+                                handleSubmitOrder()
                             }) {
                                 Text("Submit Order")
                                     .font(.headline)
@@ -251,7 +258,77 @@ struct QueuePurchaseView: View {
             }
         }
     }
+    
+    private func handleSubmitOrder() {
+        if !queueList.isEmpty {
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { _ in
+                if let randomItem = queueList.randomElement() {
+                    fetchCurrentPrice(for: randomItem.stock) { currentPrice, limitUpPrice in
+                        if let currentPrice = currentPrice, let limitUpPrice = limitUpPrice {
+                            let difference = limitUpPrice - currentPrice
+                            if difference > 0 && difference <= 100 {
+                                // 呼叫 BuyPlaceOrderHelper.placeOrder
+                                let success = BuyPlaceOrderHelper.placeOrder(
+                                    stockID: randomItem.stock.stockId,
+                                    stockName: randomItem.stock.name,
+                                    stockExchange: randomItem.stock.exchange,
+                                    numberOfShares: randomItem.quantity,
+                                    stockPrice: currentPrice,
+                                    context: viewContext // 引用 Core Data 的上下文
+                                )
 
+                                if success {
+                                    // 發送成功通知
+                                    let content = UNMutableNotificationContent()
+                                    content.title = "自动下单成功"
+                                    content.body = "股票 \(randomItem.stock.stockId) (\(randomItem.stock.name)) 已成功下单。"
+                                    content.sound = .default
+
+                                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                                    UNUserNotificationCenter.current().add(request)
+
+                                    // 移除該股票
+                                    removeFromQueue(stock: randomItem.stock)
+                                } else {
+                                    // 發送失敗通知
+                                    let content = UNMutableNotificationContent()
+                                    content.title = "下单失败"
+                                    content.body = "股票 \(randomItem.stock.stockId) (\(randomItem.stock.name)) 下单失败，可能余额不足。"
+                                    content.sound = .default
+
+                                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                                    UNUserNotificationCenter.current().add(request)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if queueList.isEmpty {
+                    timer?.invalidate()
+                    timer = nil
+                    let content = UNMutableNotificationContent()
+                    content.title = "队列已空"
+                    content.body = "股票已全部自動購買完成。"
+                    content.sound = .default
+
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                }
+            }
+        } else {
+            timer?.invalidate()
+            timer = nil
+            let content = UNMutableNotificationContent()
+            content.title = "队列为空"
+            content.body = "目前列队中无股票"
+            content.sound = .default
+
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+            UNUserNotificationCenter.current().add(request)
+        }
+    }
     private func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
