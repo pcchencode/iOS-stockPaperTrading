@@ -199,6 +199,96 @@ struct BuyPlaceOrderView: View {
     }
 }
 
+class BuyPlaceOrderHelper {
+    static func placeOrder(
+        stockID: String,
+        stockName: String,
+        stockExchange: String,
+        numberOfShares: Int,
+        stockPrice: Double,
+        context: NSManagedObjectContext
+    ) -> Bool {
+        let totalCost = Double(numberOfShares) * stockPrice
+
+        let fetchRequest: NSFetchRequest<Balance> = Balance.fetchRequest()
+        fetchRequest.fetchLimit = 1
+
+        do {
+            let balances = try context.fetch(fetchRequest)
+            if let balance = balances.first, balance.balance >= totalCost {
+                // 扣除余额
+                balance.balance -= totalCost
+
+                // 新增交易
+                let transaction = Transaction(context: context)
+                transaction.id = UUID()
+                transaction.amount = -totalCost // 確保為負值
+                transaction.date = Date()
+                transaction.type = "Auto-buy" // 修改為 Auto-buy
+
+                // 更新或新增持仓
+                let portfolioFetchRequest: NSFetchRequest<PortfolioItem> = PortfolioItem.fetchRequest()
+                portfolioFetchRequest.predicate = NSPredicate(format: "stockId == %@", stockID)
+
+                let portfolioItems = try context.fetch(portfolioFetchRequest)
+                if let existingItem = portfolioItems.first {
+                    existingItem.quantity += Int64(numberOfShares)
+                } else {
+                    let portfolioItem = PortfolioItem(context: context)
+                    portfolioItem.id = UUID()
+                    portfolioItem.stockId = stockID
+                    portfolioItem.stockName = stockName
+                    portfolioItem.stockExchange = stockExchange
+                    portfolioItem.quantity = Int64(numberOfShares)
+                    portfolioItem.timestamp = Date()
+                }
+
+                // 保存更改
+                try context.save()
+
+                // 發送成功通知
+                sendNotification(
+                    title: "交易成功",
+                    body: "股票 \(stockID) (\(stockName)) 已成功下单，金额: $\(String(format: "%.2f", totalCost))。"
+                )
+
+                return true
+            } else {
+                // 發送失敗通知
+                sendNotification(
+                    title: "交易失败",
+                    body: "餘額不足，無法購買股票 \(stockID) (\(stockName))，所需金額: $\(String(format: "%.2f", totalCost))。"
+                )
+                return false
+            }
+        } catch {
+            print("下单失败：\(error.localizedDescription)")
+
+            // 發送異常通知
+            sendNotification(
+                title: "交易错误",
+                body: "股票 \(stockID) (\(stockName)) 下单时发生错误：\(error.localizedDescription)。"
+            )
+            return false
+        }
+    }
+
+    // 發送通知的靜態方法
+    private static func sendNotification(title: String, body: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("通知发送失败：\(error)")
+            }
+        }
+    }
+}
+
 struct BuyPlaceOrderView_Previews: PreviewProvider {
     static var previews: some View {
         BuyPlaceOrderView(stockID: "300162", stockName: "雷曼光电", stockExchange: "sz")
