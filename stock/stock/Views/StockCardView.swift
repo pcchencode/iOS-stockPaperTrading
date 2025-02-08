@@ -17,14 +17,14 @@ struct StockCardView: View {
     var body: some View {
         VStack {
             HStack {
-                Image(systemName: "appletv.fill")
+                Image(systemName: "chart.line.uptrend.xyaxis.circle.fill")
                     .font(.system(size: 50))
                 
                 VStack {
                     Text(stockName)
                         .bold()
                         .font(.title3)
-                    Text("\(stockExchange)\(stockId) Inc")
+                    Text("\(stockExchange)\(stockId)")
                         .foregroundColor(Color.gray)
                         .lineLimit(1)
                         .truncationMode(.tail)

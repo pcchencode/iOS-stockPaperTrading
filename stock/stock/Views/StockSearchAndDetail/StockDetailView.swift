@@ -369,7 +369,7 @@ struct StockDetailView: View {
         HStack(spacing: 4) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    PriceStackView(price: String(format: "%.2f", currentPrice ?? 0.00), diff: "\(changePercentage ?? 0.00 >= 0 ? "+" : "")\(String(format: "%.2f", changePercentage ?? 0.00))%", caption:"中國 · RMB")
+                    PriceStackView(price: String(format: "%.2f", currentPrice ?? 0.00), diff: "\(changePercentage ?? 0.00 >= 0 ? "+" : "")\(String(format: "%.2f", changePercentage ?? 0.00))%", caption:"中國 · RMB", previousClosePrice: previousClosePrice)
                     //PriceStackView(price: "78.9", diff: "-8.7", caption:"After Hours")
                     Spacer()
                     
@@ -410,8 +410,11 @@ struct StockDetailView: View {
         .foregroundColor(Color(uiColor: .secondaryLabel))
     }
     
-    private func PriceStackView(price: String, diff: String, caption: String) -> some View {
-        VStack(alignment: .leading) {
+    private func PriceStackView(price: String, diff: String, caption: String, previousClosePrice: Double?) -> some View {
+        // 計算漲停價
+        let limitUpPrice = previousClosePrice != nil ? previousClosePrice! * 1.1 : nil // 假設漲停價是前一天收盤價的 10% 漲幅
+
+        return VStack(alignment: .leading) {
             HStack(alignment: .lastTextBaseline, spacing: 16) {
                 Text(price).font(.headline.bold())
                 Text(diff).font(.subheadline.weight(.semibold))
@@ -420,6 +423,17 @@ struct StockDetailView: View {
             Text(caption)
                 .font(.subheadline.weight(.semibold))
                 .foregroundColor(Color(uiColor: .secondaryLabel))
+            
+            // 顯示漲停價
+            if let limitUpPrice = limitUpPrice {
+                Text("漲停價: \(String(format: "%.2f", limitUpPrice))")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+            } else {
+                Text("漲停價: 計算中...")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+            }
         }
     }
     
