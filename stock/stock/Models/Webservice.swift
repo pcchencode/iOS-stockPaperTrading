@@ -45,9 +45,10 @@ class Webservice {
     
     func getStocks() async throws -> [Stock] {
         var components = URLComponents()
-        let apiKeys: [String] = ["b997d4403688d5e65a", "25874295b78c614f21", "58de28c2802a4f4319"]
+//        let apiKeys: [String] = ["b997d4403688d5e65a", "25874295b78c614f21", "58de28c2802a4f4319"]
+        let apiKeys: [String] = ["b997d4403688d5e65a", "A4A75F4A-BEDE-4D2A-8A7D-6515CB706828", "8178B7CA-349A-4357-AF11-D17ABC7982D6"]
         let apiKey = apiKeys.randomElement()!
-        components.scheme = "http"
+        components.scheme = "https"
         components.host = "api.mairui.club"
         components.path = "/hslt/list/\(apiKey)"
         
