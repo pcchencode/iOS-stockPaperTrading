@@ -1,4 +1,4 @@
-# 📈 Stock Paper Trading App (Prototype)
+# 📈 Stock Paper Trading App
 
 This repository contains the prototype of a **Stock Paper Trading Application**, developed using **SwiftUI**. The application provides users with a simulated stock trading experience, featuring **real-time stock data**, **historical K-Line charts**, and an **automated queue purchase system**. The backend integrates **Sina A-Share API** and **Mairui API** to fetch stock information.
 
